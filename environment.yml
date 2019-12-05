@@ -1,0 +1,21 @@
+name: ml-ids-api
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - awscli=1.16.297
+  - boto3=1.10.30
+  - gevent=1.4.0
+  - flask=1.1.1
+  - gunicorn==20.0.4
+  - numpy=1.17.2=py37h95a1406_0
+  - pandas=0.25.2=py37hb3f55d8_0
+  - pip=19.2.3=py37_0
+  - pytest=5.2.1=py37_0
+  - pytest-runner=5.1=py_0
+  - python=3.7.3=h33d41f4_1
+  - requests=2.22.0
+  - responses=0.10.6
+  - setuptools=41.6.0=py37_1
+  - pip:
