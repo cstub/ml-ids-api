@@ -5,7 +5,11 @@
     <orderEntry type="jdk" jdkName="Remote Python 3.7.3 (sftp://glados@192.168.1.77:22/home/glados/anaconda3/envs/ml-ids-api/bin/python)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="" />
+  </component>
   <component name="TestRunnerService">
-    <option name="PROJECT_TEST_RUNNER" value="Unittests" />
+    <option name="projectConfiguration" value="pytest" />
+    <option name="PROJECT_TEST_RUNNER" value="pytest" />
   </component>
 </module>
