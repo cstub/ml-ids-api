@@ -1,0 +1,69 @@
+swagger: "2.0"
+info:
+  description: "The public REST API of the ML-IDS classifier."
+  version: "1.0.0"
+  title: "ML-IDS API"
+basePath: "/api"
+tags:
+- name: "predictions"
+  description: "Request classification predictions for network flows"
+schemes:
+- "http"
+paths:
+  /predictions:
+    post:
+      tags:
+      - "predictions"
+      summary: "Request classification predictions for an arbitrary number of network flows"
+      description: ""
+      operationId: "requestPrediction"
+      consumes:
+      - "application/json; format=pandas-split"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Network flows to classify as Pandas DataFrame in JSON 'split' format."
+        required: true
+        schema:
+          $ref: "#/definitions/PredictionRequest"
+      responses:
+        200:
+          description: "Successful operation. Response contains the predicitions in the order of the input network flows."
+          schema:
+            $ref: "#/definitions/PredictionResponse"
+        400:
+          description: "Invalid input"
+        415:
+          description: "Unsupported media type"
+
+definitions:
+  PredictionRequest:
+    type: "object"
+    description: "Pandas DataFrame serialized as JSON in the Pandas 'split' format."
+    required:
+    - "columns"
+    - "data"
+    properties:
+      columns:
+        type: "array"
+        items:
+          type: "string"
+        example: ["dst_port","protocol","timestamp","flow_duration","tot_fwd_pkts","tot_bwd_pkts","totlen_fwd_pkts","totlen_bwd_pkts","fwd_pkt_len_max","fwd_pkt_len_min","fwd_pkt_len_mean","fwd_pkt_len_std","bwd_pkt_len_max","bwd_pkt_len_min","bwd_pkt_len_mean","bwd_pkt_len_std","flow_byts_s","flow_pkts_s","flow_iat_mean","flow_iat_std","flow_iat_max","flow_iat_min","fwd_iat_tot","fwd_iat_mean","fwd_iat_std","fwd_iat_max","fwd_iat_min","bwd_iat_tot","bwd_iat_mean","bwd_iat_std","bwd_iat_max","bwd_iat_min","fwd_psh_flags","bwd_psh_flags","fwd_urg_flags","bwd_urg_flags","fwd_header_len","bwd_header_len","fwd_pkts_s","bwd_pkts_s","pkt_len_min","pkt_len_max","pkt_len_mean","pkt_len_std","pkt_len_var","fin_flag_cnt","syn_flag_cnt","rst_flag_cnt","psh_flag_cnt","ack_flag_cnt","urg_flag_cnt","cwe_flag_count","ece_flag_cnt","down_up_ratio","pkt_size_avg","fwd_seg_size_avg","bwd_seg_size_avg","fwd_byts_b_avg","fwd_pkts_b_avg","fwd_blk_rate_avg","bwd_byts_b_avg","bwd_pkts_b_avg","bwd_blk_rate_avg","subflow_fwd_pkts","subflow_fwd_byts","subflow_bwd_pkts","subflow_bwd_byts","init_fwd_win_byts","init_bwd_win_byts","fwd_act_data_pkts","fwd_seg_size_min","active_mean","active_std","active_max","active_min","idle_mean","idle_std","idle_max","idle_min"]
+        description: "Array containing the column names of the Pandas DataFrame."
+      data:
+        type: "array"
+        items:
+          type: "array"
+          items:
+            type: "object"
+        example: [[80,17,"21\\/02\\/2018 10:15:06",119759145,75837,0,2426784,0,32,32,32.0,0.0,0,0,0.0,0.0,20263.87212,633.2460039,1579.1859130859,31767.046875,920247,1,120000000,1579.1859130859,31767.046875,920247,1,0,0.0,0.0,0,0,0,0,0,0,606696,0,633.2460327148,0.0,32,32,32.0,0.0,0.0,0,0,0,0,0,0,0,0,0,32.0004234314,32.0,0.0,0,0,0,0,0,0,75837,2426784,0,0,-1,-1,75836,8,0.0,0.0,0,0,0.0,0.0,0,0]]
+        description: "Nested array containing the data rows. Each data row is represented as a separate array."
+    
+  PredictionResponse:
+    type: "array"
+    items:
+      type: "number"
+    example: [1.0, 0.0]
+    description: "Predictions for the submitted network flows in the same order as the input rows [0=Benign, 1=Attack]."
