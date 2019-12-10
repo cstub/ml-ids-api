@@ -7,23 +7,36 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+    - uses: actions/checkout@v1
 
-      - name: Install dependencies
-        run: |
-          conda env create --file environment.yml
-          source /usr/share/miniconda/etc/profile.d/conda.sh
-          conda activate ml-ids-api
-          pip install -e .
+    - name: Install dependencies
+      run: |
+        conda env create --file environment.yml
+        source /usr/share/miniconda/etc/profile.d/conda.sh
+        conda activate ml-ids-api
+        pip install -e .
 
-      - name: Test with pytest
-        run: |
-          source /usr/share/miniconda/etc/profile.d/conda.sh
-          conda activate ml-ids-api
-          python -m pytest tests
+    - name: Static Type Check
+      run: |
+        source /usr/share/miniconda/etc/profile.d/conda.sh
+        conda activate ml-ids-api
+        make typecheck
+
+    - name: Code Quality Check
+      run: |
+        source /usr/share/miniconda/etc/profile.d/conda.sh
+        conda activate ml-ids-api
+        make lint-errors
+
+    - name: Test with pytest
+      run: |
+        source /usr/share/miniconda/etc/profile.d/conda.sh
+        conda activate ml-ids-api
+        make test
 
   deploy:
     name: Deploy

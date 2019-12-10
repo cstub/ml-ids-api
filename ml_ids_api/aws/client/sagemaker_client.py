@@ -1,3 +1,6 @@
+"""
+Module containing classes to interface with the Amazon SageMaker service (https://aws.amazon.com/sagemaker/).
+"""
 from typing import List
 import datetime
 import hashlib
@@ -8,19 +11,26 @@ from requests.exceptions import RequestException
 
 
 class AwsSagemakerHttpClientError(IOError):
+    """
+    An HTTP client error caused by a failed SageMaker HTTP request.
+    """
 
     def __init__(self, cause, status_code=None, response_body=None):
         self.cause = cause
         self.status_code = status_code
         self.response_body = response_body
-        super(IOError, self).__init__()
+        super(AwsSagemakerHttpClientError, self).__init__()
 
     def __str__(self):
         return 'AwsSagemakerHttpClientError: [{}]. Status Code: [{}]. Response Body: [{}].' \
             .format(self.cause, self.status_code, self.response_body)
 
 
-class AwsSagemakerHttpClient(object):
+class AwsSagemakerHttpClient:
+    """
+    A client to interface with the the Amazon SageMaker HTTP API.
+    Can be used to send prediction requests to an Amazon SageMaker HTTP endpoint.
+    """
 
     def __init__(self, access_key, secret_key, schema, host, endpoint, region):
         self.access_key = access_key
@@ -34,6 +44,13 @@ class AwsSagemakerHttpClient(object):
         self.url = urllib.parse.urljoin(schema + '://' + host, endpoint)
 
     def post_invocations(self, request_body: str) -> List[int]:
+        """
+        Send a new POST request to the SageMaker HTTP endpoint using a Pandas DataFrame in `split-JSON` format as the
+        request-body.
+
+        :param request_body: Pandas DataFrame in `split-JSON` format.
+        :return: List of binary predictions `[0, 1]` per row in the input DataFrame.
+        """
         content_type = 'application/json; format=pandas-split'
         now = datetime.datetime.utcnow()
         amz_date = now.strftime('%Y%m%dT%H%M%SZ')
