@@ -1,6 +1,6 @@
 boto3==1.10.30
 gevent==1.4.0
-flask==1.1.1
+flask==2.3.2
 gunicorn==20.0.4
 numpy==1.17.2
 pandas==0.25.2
